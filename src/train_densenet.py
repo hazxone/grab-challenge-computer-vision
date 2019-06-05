@@ -8,6 +8,14 @@ import pandas as pd
 from train_utils import read_from_csv
 from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 from keras import optimizers
+import os
+
+
+if os.path.isdir('snapshots'):
+    pass
+else:
+    print("Creating snapshots directory for saving model's weight")
+    os.mkdir('snapshots')
 
 
 epochs = 50
@@ -17,6 +25,7 @@ classes = 196
 
 # Read from the cropped csv and convert it to pandas Dataframe
 # since we want to use flow_from_dataframe during training
+# Class name is a 3 digits number. e.g. 001, 002 ... 196
 cars_df = pd.DataFrame(
     read_from_csv("devkit/cars_train_crop.csv", 2), columns=["filename", "class"]
 )
