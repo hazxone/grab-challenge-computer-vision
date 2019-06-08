@@ -7,6 +7,7 @@ This is a submission for Grab - AIforSEA Challenge. I choose the **Computer Visi
 root
 .
 ├── src
+│   ├── mat_to_csv.py
 │   ├── data_preprocessing.py
 │   ├── train_utils.py
 │   ├── train_densenet.py
@@ -15,12 +16,12 @@ root
 ├── data
 |   ├── car_train
 |   ├── car_test
-|   └── crop_images
+|   └── crop_images (created after running data_preprocessing.py)
 │       ├── train
 │       └── test
 |
 ├── dataframe
-│   ├── csv_files
+│   ├── csv_files (created after running mat_to_csv.py)
 │   └── mat_files
 |
 ├── snapshots
