@@ -5,18 +5,12 @@ from keras.models import Model
 from sklearn.model_selection import train_test_split
 from keras_preprocessing.image import ImageDataGenerator
 import pandas as pd
-from train_utils import read_from_csv
+from func_utils import read_from_csv, check_folder
 from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 from keras import optimizers
 import os
 
-
-if os.path.isdir('snapshots'):
-    pass
-else:
-    print("Creating snapshots directory for saving model's weight")
-    os.mkdir('snapshots')
-
+check_folder('snapshots')
 
 epochs = 50
 batch_size = 18
@@ -27,7 +21,7 @@ classes = 196
 # since we want to use flow_from_dataframe during training
 # Class name is a 3 digits number. e.g. 001, 002 ... 196
 cars_df = pd.DataFrame(
-    read_from_csv("devkit/cars_train_crop.csv", 2), columns=["filename", "class"]
+    read_from_csv("dataframe/csv_files/cars_train_crop.csv", 2), columns=["filename", "class"]
 )
 
 # Split to 7000+/1000+
@@ -100,6 +94,8 @@ STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size
 
 # Using fit_generator to avoid fitting all training data into memory
 # Start training
+print(train_generator.class_indices)
+
 model.fit_generator(
     generator=train_generator,
     steps_per_epoch=STEP_SIZE_TRAIN,

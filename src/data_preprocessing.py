@@ -1,15 +1,16 @@
 import csv
 import cv2
-import train_utils
+import func_utils
 import argparse
+from func_utils import read_from_csv
 
-def main( mode_process = 'train' ):
+def main(mode_process = 'train'):
     # Open csv list to crop all images wrt to its bounding box
     # Csv is in format [file_name, x1, y1, x2, y2, car_id]
-    cars_database = read_from_csv("data/csv_files/car_{}.csv".format(mode_process), 6)
+    cars_database = read_from_csv("dataframe/csv_files/car_{}.csv".format(mode_process), 6)
 
     # Make new csv to write back new list of the cropped images and the car class (car_id)
-    open_csv = open("data/csv_files/cars_{}_crop.csv".format(mode_process), mode="w", newline="")
+    open_csv = open("dataframe/csv_files/cars_{}_crop.csv".format(mode_process), mode="w", newline="")
     write_csv = csv.writer(
         open_csv, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
     )

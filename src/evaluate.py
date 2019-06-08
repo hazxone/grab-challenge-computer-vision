@@ -2,7 +2,7 @@ import numpy as np
 import csv
 from sklearn.metrics import classification_report
 import argparse
-from train_utils import read_from_csv, load_keras_model, image_to_tensor
+from func_utils import read_from_csv, load_keras_model, image_to_tensor
 
 def main(args = None):
     # parse arguments
