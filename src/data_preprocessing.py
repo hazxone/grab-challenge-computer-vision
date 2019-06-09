@@ -4,8 +4,18 @@ import func_utils
 import argparse
 from func_utils import read_from_csv, check_folder
 
-def main(mode_process = "train"):
+def main(args = None):
+    # parse arguments
+    args = parse_args(args)
+
+    if args.test:
+        mode_process = "test"
+    else:
+        mode_process = "train"
+
+    # Create the crop_images folder to store all the cropped images
     check_folder('data/crop_images')
+    
     # Open csv list to crop all images wrt to its bounding box
     # Csv is in format [file_name, x1, y1, x2, y2, car_id]
     cars_database = read_from_csv("dataframe/csv_files/car_{}.csv".format(mode_process), 6)
@@ -36,16 +46,13 @@ def main(mode_process = "train"):
     # 1. New folders (cars_train_crop) contains all the cropped image according to bounding box
     # 2. New csv file (cars_train_crop.csv) that list the cropped images and its correspond class : [file_path, car_id]
 
-
-parser = argparse.ArgumentParser(description='passing argument to process either train or test set')
-
-parser.add_argument('--test', action='store_true',
-                    help='To use test set, default is train set')
-
-args = parser.parse_args()
-
-if args.test:
-    mode_process = "test"
+def parse_args(args):
+    """ Parse the arguments.
+    """
+    parser     = argparse.ArgumentParser(description='Parse arguments.')
+    parser.add_argument('--test', action='store_true', help='Process test mat file')
+    
+    return parser.parse_args(args)
 
 if __name__ == "__main__":
-    main( mode_process = mode_process )
+    main(args=None)

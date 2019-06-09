@@ -20,6 +20,7 @@ def main(args = None):
     y_preds = []
     y_test = []
 
+    # Read the csv cropped file and convert it to array of [file_path, car_id]
     evaluate_list = read_from_csv(args.testcsv, 2)
 
     for car in evaluate_list:
@@ -29,7 +30,13 @@ def main(args = None):
         x = image_to_tensor(file_path, 224)
         preds = model.predict(x)
 
+        # Get the class index of highest probability result
         category_preds = int(np.argmax(preds)) + 1
+
+        # Print out the car name and probability
+        # print(class_dict[category_preds]), np.max(preds))
+
+        # Create list of predictions and ground truth to be feed into sklearn classification_report
         y_preds.append(category_preds)
         y_test.append(car_id)
 
@@ -48,9 +55,9 @@ def parse_args(args):
     """
     parser     = argparse.ArgumentParser(description='Parse arguments.')
 
-    parser.add_argument('--model', help='Path to the model weight.')
-    parser.add_argument('--classcsv', help='Path to a CSV file containing class label.')  
-    parser.add_argument('--testcsv', help='Path to a CSV file containing test images.')
+    parser.add_argument('--model', default='snapshots/densenet.h5',, help='Path to the model weight.')
+    parser.add_argument('--classcsv', default='dataframe/csv_files/class.csv', help='Path to a CSV file containing class label.')  
+    parser.add_argument('--testcsv', default='dataframe/csv_files/cars_test_crop.csv', help='Path to a CSV file containing test images.')
     return parser.parse_args(args)
 
 if __name__ == "__main__":

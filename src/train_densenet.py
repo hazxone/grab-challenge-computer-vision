@@ -2,13 +2,14 @@ from keras.applications.densenet import DenseNet169
 from keras.applications.densenet import preprocess_input
 from keras.layers import Dense
 from keras.models import Model
-from sklearn.model_selection import train_test_split
 from keras_preprocessing.image import ImageDataGenerator
-import pandas as pd
-from func_utils import read_from_csv, check_folder
 from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 from keras import optimizers
+
 import os
+import pandas as pd
+from func_utils import read_from_csv, check_folder
+from sklearn.model_selection import train_test_split
 
 check_folder('snapshots')
 
@@ -58,7 +59,8 @@ datagen = ImageDataGenerator(
 val_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)
 
 # Using SGD for optimizers. Ref: https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
-# "Fine-tuning should be done with a very slow learning rate, and typically with the SGD optimizer rather than an adaptative learning rate optimizer such as RMSProp."
+# "Fine-tuning should be done with a very slow learning rate, 
+# and typically with the SGD optimizer rather than an adaptative learning rate optimizer such as RMSProp."
 # "This is to make sure that the magnitude of the updates stays very small, so as not to wreck the previously learned features."
 sgd = optimizers.SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(optimizer=sgd, loss="categorical_crossentropy", metrics=["accuracy"])
@@ -92,10 +94,11 @@ valid_generator = val_datagen.flow_from_dataframe(
 STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
 STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size
 
-# Using fit_generator to avoid fitting all training data into memory
-# Start training
+# Sanity check to make sure the class is in the right order 001,002,003..
 print(train_generator.class_indices)
 
+# Using fit_generator to avoid fitting all training data into memory
+# Start training
 model.fit_generator(
     generator=train_generator,
     steps_per_epoch=STEP_SIZE_TRAIN,

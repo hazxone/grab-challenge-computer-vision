@@ -7,6 +7,8 @@ def main(args = None):
     # parse arguments
     args = parse_args(args)
 
+    # Separate the process into train or test
+    # If the user pass --test parameter, it will process the test files
     if args.test:
         head, tail = os.path.split(args.test-csvfile)
         check_folder(head)
