@@ -15,6 +15,10 @@ def main(args = None):
     # Load the model for prediction
     model = load_keras_model(args.model)
 
+    # Open csv for writing false prediction
+    open_csv = open("false_prediction.csv", mode="w", newline="")
+    write_csv = csv.writer(open_csv, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
     true_pred = 0
     false_pred = 0
     y_preds = []
@@ -44,12 +48,14 @@ def main(args = None):
             true_pred += 1
         else:
             false_pred += 1
+            write_csv.writerow([class_dict[car_id], class_dict[category_preds], np.max(preds)])
 
     print("Number of true prediction: ",true_pred, "Number of false prediction: ",false_pred)
     print("Accuracy: ",(100*(true_pred/(true_pred + false_pred))),"%")
 
     print(classification_report(y_test, y_preds))
-
+    open_csv.close()
+    
 def parse_args(args):
     """ Parse the arguments.
     """
