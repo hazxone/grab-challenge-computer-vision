@@ -80,7 +80,7 @@ It will then create csv file **car_train_crop.csv** with structure "file_name, c
 ```bash
 python3 src/data_preprocessing.py
 ```
-![Screenshot](jupyter_notebook/test_image/crop_image.png)
+![Screenshot](jupyter_notebook/test_image/crop_images.png)
 
 Before and after processing
 
