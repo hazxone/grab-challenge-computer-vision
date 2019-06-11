@@ -80,9 +80,9 @@ It will then create csv file **car_train_crop.csv** with structure "file_name, c
 ```bash
 python3 src/data_preprocessing.py
 ```
-![Screenshot](jupyter_notebook/test_image/crop_images.png)
+![Screenshot](jupyter_notebook/test_image/crop_image.png)
 
-Before and after processing
+*Before and after processing*
 
 
 ## 2. Training
@@ -104,10 +104,13 @@ I've managed to overcome this by padding the class number with zeros 001,002,003
 5. `flow_from_dataframe` also better with this dataset than `flow_from_directory` since we don't have to rearrange the folders back according to the classes.
 
 ### 2.2 Training Result
-After 50 epochs, with [image augmentation of translation and scaling](https://github.com/hazxone/grab-challenge-computer-vision/blob/9e9558b1dc014e3e9be685af559fa4c6c5831d78/src/train_densenet.py#L50-L58), I got validation loss of 0.22
+After 80 epochs, with [image augmentation of translation and scaling](https://github.com/hazxone/grab-challenge-computer-vision/blob/9e9558b1dc014e3e9be685af559fa4c6c5831d78/src/train_densenet.py#L50-L58), I got validation loss of 0.29
 
-![Screenshot](jupyter_notebook/test_image/loss-acc-g.png)
-![Screenshot](jupyter_notebook/test_image/val-g.png)
+![Screenshot](jupyter_notebook/test_image/loss_acc.png)
+*Accuracy and Loss Graph*
+
+![Screenshot](jupyter_notebook/test_image/val_loss_acc.png)
+*Validation Accuracy and Loss Graph*
 
 
 ## 3. Testing / Evaluation
@@ -138,9 +141,7 @@ python3 src/evaluate.py --model snapshots/densenet.h5 --testcsv dataframe/csv_fi
 
 ### 3.2 Test Result
 
-I got **90.8%** Accuracy (7303 true predictions out of 8041 images)
-
-![Screenshot](jupyter_notebook/test_image/evaluate.png)
+I got **91.1%** Accuracy (7326 true predictions out of 8041 images)
 
 ### 3.3 Running Jupyter Notebook
 
