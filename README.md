@@ -104,12 +104,12 @@ I've managed to overcome this by padding the class number with zeros 001,002,003
 5. `flow_from_dataframe` also better with this dataset than `flow_from_directory` since we don't have to rearrange the folders back according to the classes.
 
 ### 2.2 Training Result
-After 80 epochs, with [image augmentation of translation and scaling](https://github.com/hazxone/grab-challenge-computer-vision/blob/9e9558b1dc014e3e9be685af559fa4c6c5831d78/src/train_densenet.py#L50-L58), I got validation loss of 0.29
+After 80 epochs, with [image augmentation of translation and scaling](https://github.com/hazxone/grab-challenge-computer-vision/blob/9e9558b1dc014e3e9be685af559fa4c6c5831d78/src/train_densenet.py#L50-L58), I got validation loss of 0.26
 
-![Screenshot](jupyter_notebook/test_image/loss_acc.png)
+![Screenshot](jupyter_notebook/test_image/loss_acc_2.png)
 *Accuracy and Loss Graph*
 
-![Screenshot](jupyter_notebook/test_image/val_loss_acc.png)
+![Screenshot](jupyter_notebook/test_image/val_loss_acc_2.png)
 *Validation Accuracy and Loss Graph*
 
 
