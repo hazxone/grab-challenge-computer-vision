@@ -60,7 +60,7 @@ root
 
 ## Installation
 
-1. Install python modules
+1. Install python modules (change tensorflow-gpu to tensorflow if NVIDIA is not available)
 ```
 pip3 install -r requirements.txt
 ```
