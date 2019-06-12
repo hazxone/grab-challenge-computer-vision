@@ -1,8 +1,10 @@
 import csv
 import os
+
 import numpy as np
-from keras.models import load_model
+
 from keras.applications.densenet import preprocess_input
+from keras.models import load_model
 from keras.preprocessing import image
 
 def read_from_csv(csv_file_name, number_of_columns):
@@ -43,7 +45,7 @@ def image_to_tensor(file_path, image_size=224):
     
     Arguments:
         file_path {str} -- Path to image file
-        image_size {int} -- Image size to be resize. DenseNet image size is 224 px (default: {224})
+        image_size {int} -- Image size to be resize. DenseNet default image size is 224 px (default: {224})
     
     Returns:
         4D Tensor -- Image file that has been normalized / scaled and added batch dimension

@@ -1,11 +1,13 @@
-import numpy as np
-import csv
-from sklearn.metrics import classification_report
 import argparse
-from func_utils import read_from_csv, load_keras_model, image_to_tensor
+import csv
+
+import numpy as np
+
+from func_utils import image_to_tensor, load_keras_model, read_from_csv
+from sklearn.metrics import classification_report
+
 
 def main(args = None):
-    # parse arguments
     args = parse_args(args)
 
     # Read the class list and convert it into dictionary e.g. {car_class:car_name}
@@ -15,7 +17,7 @@ def main(args = None):
     # Load the model for prediction
     model = load_keras_model(args.model)
 
-    # Open csv for writing false prediction
+    # Open new csv for writing false prediction
     open_csv = open(args.falsecsv, mode="w", newline="")
     write_csv = csv.writer(open_csv, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
@@ -35,7 +37,7 @@ def main(args = None):
         x = image_to_tensor(file_path, 224)
         preds = model.predict(x)
 
-        # Get the class index of highest probability result
+        # Get the class index of highest probability result and shift by 1 since python is zero based index
         category_preds = int(np.argmax(preds)) + 1
 
         # Uncomment to print out the car name and probability
@@ -62,7 +64,7 @@ def parse_args(args):
     """
     parser     = argparse.ArgumentParser(description='Parse arguments.')
 
-    parser.add_argument('--model', default='snapshots/densenet.h5',, help='Path to the model weight.')
+    parser.add_argument('--model', default='snapshots/DenseNet169-epochs-47-0.26.h5', help='Path to the model weight.')
     parser.add_argument('--classcsv', default='dataframe/csv_files/class.csv', help='Path to a CSV file containing class label.')  
     parser.add_argument('--testcsv', default='dataframe/csv_files/cars_test_crop.csv', help='Path to a CSV file containing test images.')
     parser.add_argument('--falsecsv', default='dataframe/csv_files/false_prediction.csv', help='Path to a CSV file containing test images.')

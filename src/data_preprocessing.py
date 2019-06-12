@@ -1,13 +1,14 @@
+import argparse
 import csv
+import os
+
 import cv2
 import func_utils
-import argparse
-import os
+from func_utils import check_folder, read_from_csv
 from tqdm import tqdm
-from func_utils import read_from_csv, check_folder
+
 
 def main(args = None):
-    # parse arguments
     args = parse_args(args)
 
     if args.test:
@@ -23,7 +24,7 @@ def main(args = None):
     # Csv is in format [file_name, x1, y1, x2, y2, car_id]
     cars_database = read_from_csv(os.path.join('dataframe','csv_files', 'cars_{}.csv'.format(mode_process)), 6)
 
-    # Make new csv to write back new list of the cropped images and the car class (car_id)
+    # Create new csv to write new list of the cropped images's path and the car class (file_path, car_id)
     open_csv = open(os.path.join('dataframe','csv_files', 'cars_{}_crop.csv'.format(mode_process)), mode="w", newline="")
     write_csv = csv.writer(
         open_csv, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL

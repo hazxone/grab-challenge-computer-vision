@@ -1,11 +1,12 @@
-import scipy.io as spio
-import csv
-from func_utils import check_folder
-import os
 import argparse
+import csv
+import os
+
+import scipy.io as spio
+from func_utils import check_folder
+
 
 def main(args = None):
-    # parse arguments
     args = parse_args(args)
 
     # Separate the process into train or test
@@ -38,17 +39,30 @@ def main(args = None):
 
     open_csv.close()
 
+    # Check if class mapping file exist, if not, create from cars_meta.mat
+    if not os.path.isfile(os.path.join('dataframe', 'csv_files', 'class.csv')):
+        mat_class = spio.loadmat(os.path.join('dataframe', 'mat_files', 'cars_meta.mat'), squeeze_me=True)
+        row_mat_class = mat_class['class_names']
+        open_class_csv = open(os.path.join('dataframe', 'csv_files', 'class.csv'), mode="w", newline="")
+        write_class_csv = csv.writer(
+            open_class_csv, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
+        )
+        for i, row in enumerate(row_mat_class):
+            write_class_csv.writerow([row, int(i + 1)])
+    open_class_csv.close()
+
+
 
 def parse_args(args):
     """ Parse the arguments.
     """
     parser     = argparse.ArgumentParser(description='Parse arguments.')
 
-    parser.add_argument('--matfile', default='dataframe/mat_files/cars_train_annos.mat', help='Path to the mat file.')
-    parser.add_argument('--csvfile', default='dataframe/csv_files/cars_train.csv', help='Path to save the csv.')
+    parser.add_argument('--matfile', default='dataframe/mat_files/cars_train_annos.mat', help='Path to train mat file.')
+    parser.add_argument('--csvfile', default='dataframe/csv_files/cars_train.csv', help='Path to save train csv.')
     parser.add_argument('--test', action='store_true', help='Change mode to process test set')
-    parser.add_argument('--testmatfile', default='dataframe/mat_files/cars_test_annos_withlabels.mat', help='Path to the mat file.')
-    parser.add_argument('--testcsvfile', default='dataframe/csv_files/cars_test.csv', help='Path to save the csv.')
+    parser.add_argument('--testmatfile', default='dataframe/mat_files/cars_test_annos_withlabels.mat', help='Path to test mat file.')
+    parser.add_argument('--testcsvfile', default='dataframe/csv_files/cars_test.csv', help='Path to save test csv.')
     
     return parser.parse_args(args)
 
