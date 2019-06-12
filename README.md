@@ -7,15 +7,15 @@ by M Hazwan Effendi (hazwan@gmail.com)
 
 ## Solution Description
 
-* This is the folder layout for the whole repository.\
-* Raw data from dataset are organized in the **data** folder. The processing (cropping) of the raw images are stored under **data/crop_images**.\
-* All meta data such as mat files and csv files are under **dataframe** folder.\
-* Weight saved from training / to load model during inference is inside **snapshots** folder. [Download pre-trained weights](https://drive.google.com/open?id=1repdxph5crkJKgUdQTCLhpWhDi3l3rXp)
+* This is the folder layout for the whole repository.
+* Raw data from dataset are organized in the **data** folder. The processing (cropping) of the raw images are stored under **data/crop_images**.
+* All meta data such as mat files and csv files are under **dataframe** folder.
+* Weight saved from training / weight to load model during inference is inside **snapshots** folder.
 
 1. Data Processing
-2. Training
-3. Testing / Evaluation
-4. Extra (Using Object Detection)
+3. Training
+4. Testing / Evaluation
+5. Extra (Using Object Detection)
 
 ```
 root
@@ -28,11 +28,11 @@ root
 │   └── evaluate.py
 |
 ├── data
-|   └── car_train
+|   └── cars_train
 |       ├── 00001.jpg
 |       ├── ....
 |       └── 08144.jpg
-|   └── car_test
+|   └── cars_test
 |       ├── 00001.jpg
 |       ├── ....
 |       └── 08041.jpg
@@ -58,6 +58,14 @@ root
 └── README.md
 ```
 
+## Installation
+
+1. Install python modules
+```
+pip3 install -r requirements.txt
+```
+
+2. [Download pre-trained weights](https://drive.google.com/open?id=1repdxph5crkJKgUdQTCLhpWhDi3l3rXp) and move it to **snapshots** folder
 
 ******
 ## 1. Data Processing
@@ -67,13 +75,13 @@ First we need to convert the mat file *car_train_annos.mat* to csv.
 ```bash
 python3 src/mat_to_csv.py
 ```
-The output file is *car_train.csv* in the **dataframe/csv_files**
+The output file is *cars_train.csv* in the **dataframe/csv_files**
 
 ### 1.2 Second Step - Crop Car Images
 Then we need to process the raw images.\
-This script will crop the car images in **data/car_train** according to the bounding box and save it in the **data/crop_images**.\
-It read the file and bounding box from the csv file created above (*car_train.csv*).\
-It will then create csv file *car_train_crop.csv* with structure "file_name, car_id" in **dataframe/csv_files**.
+This script will crop the car images in **data/cars_train** according to the bounding box and save it in the **data/crop_images**.\
+It read the file and bounding box from the csv file created above (*cars_train.csv*).\
+It will then create csv file *cars_train_crop.csv* with structure "file_name, car_id" in **dataframe/csv_files**.
 
 ```bash
 python3 src/data_preprocessing.py
@@ -82,14 +90,14 @@ python3 src/data_preprocessing.py
 
 *Before and after processing*
 
-## 2. CSV Dataset
+## CSV Dataset
 
-> ### Why I use CSV
-> * I focused to use the input of training and evaluation in CSV file format.
-> * CSV file is much easier to create, access, manipulate, convert to PandasDataframe and it is in general better compability format compared to Matlab file.
-> * Hence, the reason I've separate the process of converting mat file to csv file from the data clean up (croppping the image).
+### Why I use CSV
+* I focused to use the input of training and evaluation in CSV file format.
+* CSV file is much easier to create, access, manipulate, convert to PandasDataframe and it is in general better compability format compared to Matlab file.
+* Hence, the reason I've separate the process of converting mat file to csv file from the data clean up (croppping the image).
 
-### 2.1 CSV Mapping Format
+### CSV Mapping Format
 **Class mapping**
 * CSV that map the class name to car make and model name
 ```
@@ -155,10 +163,8 @@ After 80 epochs, with [image augmentation of translation and scaling](https://gi
 ******
 ## 3. Testing / Evaluation
 
-[Download pre-trained weights](https://drive.google.com/open?id=1repdxph5crkJKgUdQTCLhpWhDi3l3rXp)
-
 ### 3.1 Evaluate Test Dataset
-1. After training complete, we can evaluate using the test dataset (8041 images). First we need to extract the test images from tar.gzip in the **data/car_test**, and copy *cars_test_annos_withlabels.mat* to **dataframe/mat_files**. Then we need to convert the mat file to csv.
+1. After training complete, we can evaluate using the test dataset (8041 images). First we need to extract the test images from tar.gzip in the **data/cars_test**, and copy *cars_test_annos_withlabels.mat* to **dataframe/mat_files**. Then we need to convert the mat file to csv.
 
 ```bash
 python3 src/mat_to_csv.py --test
@@ -178,7 +184,7 @@ The output will be list of file name and car class saved in *cars_test_crop.csv*
    The pre-trained weight can be download [here](https://drive.google.com/open?id=1repdxph5crkJKgUdQTCLhpWhDi3l3rXp)
 
 ```bash
-python3 src/evaluate.py --model snapshots/DenseNet169-epochs-47-0.26.h5 --testcsv dataframe/csv_files/car_test_crop.csv --classcsv dataframe/csv_files/classes.csv
+python3 src/evaluate.py --model snapshots/DenseNet169-epochs-47-0.26.h5 --testcsv dataframe/csv_files/cars_test_crop.csv --classcsv dataframe/csv_files/class.csv
 ```
 
 ### 3.2 Test Result
@@ -187,7 +193,7 @@ I got **91.1%** Accuracy (7326 true predictions out of 8041 images)
 
 ### 3.3 Running Jupyter Notebook
 
-Jupyter Notebook Evaluate_Test.ipynb has the same content as evaluate.py but with sample of processed images displayed in the notebook
+Jupyter Notebook *Evaluate_Test.ipynb* has the same content as *evaluate.py* but with sample of processed images displayed in the notebook
 
 
 ******

@@ -49,8 +49,8 @@ def main(args = None):
         )
         for i, row in enumerate(row_mat_class):
             write_class_csv.writerow([row, int(i + 1)])
-    open_class_csv.close()
-
+            
+        open_class_csv.close()
 
 
 def parse_args(args):
