@@ -1,7 +1,9 @@
 import csv
 import os
+import numpy as np
 from keras.models import load_model
 from keras.applications.densenet import preprocess_input
+from keras.preprocessing import image
 
 def read_from_csv(csv_file_name, number_of_columns):
     """Read from csv and convert it to python array

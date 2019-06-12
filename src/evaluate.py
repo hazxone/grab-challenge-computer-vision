@@ -8,7 +8,7 @@ def main(args = None):
     # parse arguments
     args = parse_args(args)
 
-    # Read the class list and convert it into dictionary 
+    # Read the class list and convert it into dictionary e.g. {car_class:car_name}
     class_list = read_from_csv(args.classcsv, 2)
     class_dict = {int(car[1]):car[0] for car in class_list}
 
@@ -16,7 +16,7 @@ def main(args = None):
     model = load_keras_model(args.model)
 
     # Open csv for writing false prediction
-    open_csv = open("false_prediction.csv", mode="w", newline="")
+    open_csv = open(args.falsecsv, mode="w", newline="")
     write_csv = csv.writer(open_csv, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     true_pred = 0
@@ -24,20 +24,21 @@ def main(args = None):
     y_preds = []
     y_test = []
 
-    # Read the csv cropped file and convert it to array of [file_path, car_id]
+    # Read the csv list of cropped files and convert it to array of [file_path, car_id]
     evaluate_list = read_from_csv(args.testcsv, 2)
 
     for car in evaluate_list:
         file_path = str(car[0])
         car_id = int(car[1])
 
+        # Load, resize, convert to 4D tensor and normalize image before predict
         x = image_to_tensor(file_path, 224)
         preds = model.predict(x)
 
         # Get the class index of highest probability result
         category_preds = int(np.argmax(preds)) + 1
 
-        # Print out the car name and probability
+        # Uncomment to print out the car name and probability
         # print(class_dict[category_preds]), np.max(preds))
 
         # Create list of predictions and ground truth to be feed into sklearn classification_report
@@ -51,7 +52,7 @@ def main(args = None):
             write_csv.writerow([class_dict[car_id], class_dict[category_preds], np.max(preds)])
 
     print("Number of true prediction: ",true_pred, "Number of false prediction: ",false_pred)
-    print("Accuracy: ",(100*(true_pred/(true_pred + false_pred))),"%")
+    print("Accuracy: {:.4f}% ".format(100*(true_pred/(true_pred + false_pred))))
 
     print(classification_report(y_test, y_preds))
     open_csv.close()
@@ -64,6 +65,7 @@ def parse_args(args):
     parser.add_argument('--model', default='snapshots/densenet.h5',, help='Path to the model weight.')
     parser.add_argument('--classcsv', default='dataframe/csv_files/class.csv', help='Path to a CSV file containing class label.')  
     parser.add_argument('--testcsv', default='dataframe/csv_files/cars_test_crop.csv', help='Path to a CSV file containing test images.')
+    parser.add_argument('--falsecsv', default='dataframe/csv_files/false_prediction.csv', help='Path to a CSV file containing test images.')
     return parser.parse_args(args)
 
 if __name__ == "__main__":

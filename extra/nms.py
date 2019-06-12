@@ -1,3 +1,6 @@
+# Non max suppression by Adrian Rosebrock
+# https://www.pyimagesearch.com/2015/02/16/faster-non-maximum-suppression-python/
+
 import numpy as np
 
 def non_max_suppression_fast(boxes, overlapThresh, scores, labels):

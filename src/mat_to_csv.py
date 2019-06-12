@@ -2,6 +2,7 @@ import scipy.io as spio
 import csv
 from func_utils import check_folder
 import os
+import argparse
 
 def main(args = None):
     # parse arguments
@@ -10,10 +11,10 @@ def main(args = None):
     # Separate the process into train or test
     # If the user pass --test parameter, it will process the test files
     if args.test:
-        head, tail = os.path.split(args.test-csvfile)
+        head, tail = os.path.split(args.testcsvfile)
         check_folder(head)
-        mat = spio.loadmat(args.test-matfile, squeeze_me=True)
-        open_csv = open(args.test-csvfile, mode="w", newline="")
+        mat = spio.loadmat(args.testmatfile, squeeze_me=True)
+        open_csv = open(args.testcsvfile, mode="w", newline="")
     else:
         head, tail = os.path.split(args.csvfile)
         check_folder(head)
@@ -45,9 +46,9 @@ def parse_args(args):
 
     parser.add_argument('--matfile', default='dataframe/mat_files/cars_train_annos.mat', help='Path to the mat file.')
     parser.add_argument('--csvfile', default='dataframe/csv_files/cars_train.csv', help='Path to save the csv.')
-    parser.add_argument('--test', action='store_true', help='Process test mat file')
-    parser.add_argument('--test-matfile', default='dataframe/mat_files/cars_test_annos_withlabels.mat', help='Path to the mat file.')
-    parser.add_argument('--test-csvfile', default='dataframe/csv_files/cars_test.csv', help='Path to save the csv.')
+    parser.add_argument('--test', action='store_true', help='Change mode to process test set')
+    parser.add_argument('--testmatfile', default='dataframe/mat_files/cars_test_annos_withlabels.mat', help='Path to the mat file.')
+    parser.add_argument('--testcsvfile', default='dataframe/csv_files/cars_test.csv', help='Path to save the csv.')
     
     return parser.parse_args(args)
 

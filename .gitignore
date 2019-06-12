@@ -4,3 +4,10 @@ __pycache__
 
 #Large files
 snapshots/*.h5
+
+#Processed Files
+dataframe/csv_files/*
+!dataframe/csv_files/class.csv
+
+#Dataset
+data/*

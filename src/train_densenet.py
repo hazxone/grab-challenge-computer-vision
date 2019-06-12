@@ -13,8 +13,8 @@ from sklearn.model_selection import train_test_split
 
 check_folder('snapshots')
 
-epochs = 50
-batch_size = 18
+epochs = 80
+batch_size = 29
 image_size = 224
 classes = 196
 
@@ -22,11 +22,11 @@ classes = 196
 # since we want to use flow_from_dataframe during training
 # Class name is a 3 digits number. e.g. 001, 002 ... 196
 cars_df = pd.DataFrame(
-    read_from_csv("dataframe/csv_files/cars_train_crop.csv", 2), columns=["filename", "class"]
+    read_from_csv(os.path.join('dataframe','csv_files', 'cars_train_crop.csv'), 2), columns=['filename', 'class']
 )
 
 # Split to 7000+/1000+
-train_df, val_df = train_test_split(cars_df, test_size=0.125)
+train_df, val_df = train_test_split(cars_df, test_size=0.120)
 
 # Construct DenseNet169 Model from keras.applications
 # Include top is set to false to make sure we can use pre-trained weights on imagenet
@@ -49,12 +49,11 @@ print(model.summary())
 # Referece : https://towardsdatascience.com/data-augmentation-experimentation-3e274504f04b
 datagen = ImageDataGenerator(
     preprocessing_function=preprocess_input,
-    rotation_range=15.0,
-    width_shift_range=0.15,
-    height_shift_range=0.15,
-    shear_range=0.1,
-    zoom_range=0.25,
-    horizontal_flip=True,
+    rotation_range=17.0,
+    width_shift_range=0.18,
+    height_shift_range=0.18,
+    zoom_range=0.32,
+    horizontal_flip=True
 )
 val_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)
 
@@ -62,15 +61,15 @@ val_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)
 # "Fine-tuning should be done with a very slow learning rate, 
 # and typically with the SGD optimizer rather than an adaptative learning rate optimizer such as RMSProp."
 # "This is to make sure that the magnitude of the updates stays very small, so as not to wreck the previously learned features."
-sgd = optimizers.SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
+sgd = optimizers.SGD(lr=1e-2, decay=5e-7, momentum=0.9, nesterov=True)
 model.compile(optimizer=sgd, loss="categorical_crossentropy", metrics=["accuracy"])
 
 # Declare callbacks - Save model and reduce learning rate
-filepath = "snapshots/DenseNet169-epochs-{epoch:02d}-{val_loss:.2f}.h5"
+filepath = os.path.join("snapshots", "DenseNet169-epochs-{epoch:02d}-{val_loss:.2f}.h5")
 checkpoint = ModelCheckpoint(
     filepath, monitor="val_loss", verbose=1, save_best_only=True
 )
-reduce_lr = ReduceLROnPlateau("val_acc", factor=0.2, patience=2, verbose=1)
+reduce_lr = ReduceLROnPlateau("val_acc", factor=0.33, patience=2, verbose=1)
 callbacks_list = [checkpoint, reduce_lr]
 
 # Create generator from the dataframe
@@ -80,7 +79,7 @@ train_generator = datagen.flow_from_dataframe(
     y_col="class",
     target_size=(image_size, image_size),
     class_mode="categorical",
-    batch_size=batch_size,
+    batch_size=batch_size
 )
 valid_generator = val_datagen.flow_from_dataframe(
     val_df,
@@ -88,7 +87,7 @@ valid_generator = val_datagen.flow_from_dataframe(
     y_col="class",
     target_size=(image_size, image_size),
     class_mode="categorical",
-    batch_size=batch_size,
+    batch_size=batch_size
 )
 
 STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size

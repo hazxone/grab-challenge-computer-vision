@@ -1,6 +1,7 @@
 # Grab Challenge - Computer Vision
 
-This is a submission for Grab - AIforSEA Challenge. I choose the **Computer Vision - Recognizing Car Details**
+This is a submission for Grab - AIforSEA. I choose the **Computer Vision Challenge - Recognizing Car Details**\
+by M Hazwan Effendi (hazwan@gmail.com)
 
 ![Screenshot](jupyter_notebook/test_image/grab_header.png)
 
@@ -8,7 +9,8 @@ This is a submission for Grab - AIforSEA Challenge. I choose the **Computer Visi
 
 This is the folder layout for the whole repository.\
 Raw data from dataset are organized in the **data** folder. The processing (cropping) of the raw images are stored under **data/crop_images**.\
-All meta data such as mat files and csv files are under **dataframe** folder.
+All meta data such as mat files and csv files are under **dataframe** folder.\
+Weight from pretrained-weight is inside **snapshots** folder [Download pre-trained weights](https://drive.google.com/open?id=1repdxph5crkJKgUdQTCLhpWhDi3l3rXp)
 
 1. Data Processing
 2. Training
@@ -42,11 +44,10 @@ root
 │   └── mat_files
 |
 ├── snapshots
-│   └── model_weight_file.h5 (Placed pre-trained model weight here)
+│   └── DenseNet169-epochs-47-0.26.h5 (Placed pre-trained model weight here)
 |
 ├── jupyter_notebook
 │   ├── Example.ipynb
-│   ├── Extra - Get the bounding box of car.ipynb
 |   └── test_image
 |
 ├── extra
@@ -90,7 +91,7 @@ python3 src/data_preprocessing.py
 ### 2.1 Train Dataset
 1. I've tried the training with various backbone architecture such as Resnet, ResnetV2, InceptionResnetV2.
 In the end, DenseNet169 gave the lowest validation error. Not only that, DenseNet has much lower trainable parameters (12M) compared
-to the same layers in ResNet (60M).
+to the same number of layers in ResNet (60M).
 
 ```bash
 python3 src/train_densenet.py
@@ -115,8 +116,10 @@ After 80 epochs, with [image augmentation of translation and scaling](https://gi
 
 ## 3. Testing / Evaluation
 
+[Download pre-trained weights](https://drive.google.com/open?id=1repdxph5crkJKgUdQTCLhpWhDi3l3rXp)
+
 ### 3.1 Evaluate Test Dataset
-1. After training, we can use the test dataset (8041 images). First we need to convert the mat file to csv. Extract the test images from tar.gzip in the 'data/car_test', and copy **cars_test_annos_withlabels.mat** to 'dataframe/mat_files'
+1. After training complete, we can use evaluate using the test dataset (8041 images). First we need to extract the test images from tar.gzip in the 'data/car_test', and copy **cars_test_annos_withlabels.mat** to 'dataframe/mat_files'. Then we need to convert the mat file to csv
 
 ```bash
 python3 src/mat_to_csv.py --test
@@ -124,19 +127,19 @@ python3 src/mat_to_csv.py --test
 
    The output will be **cars_test.csv** in the 'dataframe/csv_files' folder
 
-2. Then we need to crop the test images according to the bounding box
+2. After that we need to crop the test images according to its respective bounding box
 
 ```bash
 python3 src/data_preprocessing.py --test
 ```
-The output will be **cars_test_crop.csv** in the 'dataframe/csv_files' folder and cropped images in 'data/crop_images/test'
+The output will be list of file name and car class saved in **cars_test_crop.csv** in the 'dataframe/csv_files' folder. The actual cropped images are saved in 'data/crop_images/test'
 
 3. Run the test evaluation
 
-   The pre-trained weight can be download here
+   The pre-trained weight can be download [here](https://drive.google.com/open?id=1repdxph5crkJKgUdQTCLhpWhDi3l3rXp)
 
 ```bash
-python3 src/evaluate.py --model snapshots/densenet.h5 --testcsv dataframe/csv_files/car_test_crop.csv --classcsv dataframe/csv_files/classes.csv
+python3 src/evaluate.py --model snapshots/DenseNet169-epochs-47-0.26.h5 --testcsv dataframe/csv_files/car_test_crop.csv --classcsv dataframe/csv_files/classes.csv
 ```
 
 ### 3.2 Test Result
@@ -145,26 +148,25 @@ I got **91.1%** Accuracy (7326 true predictions out of 8041 images)
 
 ### 3.3 Running Jupyter Notebook
 
-Run Jupyter Notebook from root folder to make sure it can load the pre-trained weight in snapshots folder.
-Or copy the weight into jupyter_notebook folder
+Jupyter Notebook Evaluate_Test.ipynb has the same content as evaluate.py but with sample of processed images displayed in the notebook
 
 
 ## 4. Extra - Process Data as an Object Detection
 
-So far we processed car images that already have its bounding box defined.\
-This annotation process usually done manually by human annotators.\
-To accurately predict the car make and model, we need properly cropped images since our model was trained on cropped images.
+1. To accurately predict the car make and model, we need properly cropped images since our model was trained on cropped images.\
+   So far we processed car images that already have its bounding box defined.\
+   This annotation process usually done manually by human annotators.
 
-But what if in real life we need to process images from camera/dashcam that does not have bounding box of cars.\
-Manually annotate cars location would be labour intensive.\
-We can use object detection algorithm to get accurate estimation of the location of the car.
+2. But what if in real life we need to process images from camera/dashcam that does not have bounding box of cars.\
+   Manually annotate bounding box of cars would be labour intensive.\
+   We can use object detection algorithm to get accurate estimation of the car bounding box.
 
-The new processing pipeline would then be:
+   The new processing pipeline would then be:
 
-> Raw image -> Object Detection (to get bounding box) -> Crop car according to its bounding box -> Load model and predict
+   `Raw image` -> `Object Detection (to get bounding box coordinate)` -> `Crop car according to its bounding box` -> `Load model and predict`
 
-There are many object detection algorithm out there such as Yolo, Faster-RCNN, SSD, but for this demonstration I used [Retinanet by fizyr](https://github.com/fizyr/keras-retinanet) to train the cars dataset and show proof of concept getting the bounding box of the cars automatically.
+3. There are many object detection algorithm out there such as Yolo, Faster-RCNN, SSD, but for this demonstration I will use single shot detector [Retinanet by fizyr](https://github.com/fizyr/keras-retinanet) to train the cars dataset and show proof of concept getting the bounding box of unseen images of car automatically.
 
 ![Screenshot](extra/images/before_after.png)
 
-The example is shown on the Jupyter Notebook, however the full code to run Retinanet was not included in this repo since it would add extra complexitity to this repo. To actually load Retinanet model, we need to install / compile Cython code from its Github page.
+*The example is shown on the [Jupyter Notebook](https://github.com/hazxone/grab-challenge-computer-vision/blob/master/extra/Grab_object_detection.ipynb), however the full code to run Retinanet was not included in this repo since it would add extra complexitity to this repo. To actually load Retinanet model, we need to install / compile Cython code from its Github page.*
