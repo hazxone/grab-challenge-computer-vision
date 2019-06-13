@@ -1,8 +1,6 @@
 import argparse
 import csv
-
 import numpy as np
-
 from func_utils import image_to_tensor, load_keras_model, read_from_csv
 from sklearn.metrics import classification_report
 
@@ -51,7 +49,7 @@ def main(args = None):
             true_pred += 1
         else:
             false_pred += 1
-            write_csv.writerow([class_dict[car_id], class_dict[category_preds], np.max(preds)])
+            write_csv.writerow([file_path, car_id, class_dict[car_id], category_preds, class_dict[category_preds], np.max(preds)])
 
     print("Number of true prediction: ",true_pred, "Number of false prediction: ",false_pred)
     print("Accuracy: {:.4f}% ".format(100*(true_pred/(true_pred + false_pred))))

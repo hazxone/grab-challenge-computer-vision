@@ -1,9 +1,7 @@
 import argparse
 import csv
 import os
-
 import cv2
-import func_utils
 from func_utils import check_folder, read_from_csv
 from tqdm import tqdm
 
