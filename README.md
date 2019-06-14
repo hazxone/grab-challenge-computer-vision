@@ -70,7 +70,7 @@ pip3 install -r requirements.txt
 ******
 ## 1. Data Processing
 
-Exploratory Data Analysis (EDA) of the dataset can be viewed in [this Jupyter Notebook](https://github.com/hazxone/grab-challenge-computer-vision/blob/master/jupyter_notebook/Exploratory_Data_Analysis.ipynb)
+**Exploratory Data Analysis (EDA) of the training dataset can be viewed in [this Jupyter Notebook](https://github.com/hazxone/grab-challenge-computer-vision/blob/master/jupyter_notebook/Exploratory_Data_Analysis.ipynb)**
 
 ### 1.1 First Step - Convert .mat to csv
 First we need to convert the mat file *car_train_annos.mat* to csv.
@@ -195,7 +195,7 @@ I got **91.1%** Accuracy (7326 true predictions out of 8041 images)
 
 ### 3.3 Running Jupyter Notebook
 
-[Jupyter Notebook *Evaluate_Test.ipynb*](https://github.com/hazxone/grab-challenge-computer-vision/blob/master/jupyter_notebook/Evaluate_Test.ipynb) has the same content as *evaluate.py* but with sample of processed images displayed in the notebook
+Jupyter Notebook [*Evaluate_Test.ipynb*](https://github.com/hazxone/grab-challenge-computer-vision/blob/master/jupyter_notebook/Evaluate_Test.ipynb) has the same content as *evaluate.py* but with sample of processed images displayed in the notebook
 
 
 ******
