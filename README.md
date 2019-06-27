@@ -1,7 +1,6 @@
 # Grab Challenge - Computer Vision
 
 This is a submission for Grab - AIforSEA. I choose the **Computer Vision Challenge - Recognizing Car Details**\
-by M Hazwan Effendi (hazwan@gmail.com)
 
 ![Screenshot](jupyter_notebook/test_image/grab_header.png)
 
